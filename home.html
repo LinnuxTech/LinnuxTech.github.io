@@ -544,70 +544,7 @@
   <section id="posts" style="padding-top: 1rem;">
     <div class="section-divider"><h2>// field notes</h2></div>
     <div class="posts-section">
-      <div class="posts-grid">
-
-        <article class="post-card featured">
-          <div>
-            <div class="post-severity">
-              <div class="sev-pip high"></div>
-              <span class="sev-label high">featured</span>
-            </div>
-            <h3>From Alert Triage to Policy Architecture: What the SOC Taught Me About Data Protection</h3>
-            <p>The skills transfer isn't obvious until it is. Pattern recognition, incident scoping, stakeholder communication — the SOC floor builds exactly the instincts you need when you move into governance and protection roles.</p>
-            <div class="post-footer">
-              <span class="post-date">2025-04-07</span>
-              <span class="post-domain">career</span>
-            </div>
-          </div>
-          <div style="opacity:.35; font-family: var(--mono); font-size:.7rem; color: var(--text); line-height:2.2;">
-            <div>▸ triage_skills → policy_thinking</div>
-            <div>▸ alert_context → data_classification</div>
-            <div>▸ incident_scope → legal_hold_scope</div>
-            <div>▸ runbook_execution → workflow_design</div>
-            <div style="margin-top:.8rem; color: var(--amber);">// thread continues inside</div>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-severity">
-            <div class="sev-pip high"></div>
-            <span class="sev-label high">automation</span>
-          </div>
-          <h3>Automating Legal Hold Requests in Microsoft 365 with Logic Apps</h3>
-          <p>Walking through the flow design I use to handle cloud data preservation — triggers, eDiscovery API calls, and keeping your legal team in the loop without a ticket queue.</p>
-          <div class="post-footer">
-            <span class="post-date">2025-03-28</span>
-            <span class="post-domain">Logic Apps</span>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-severity">
-            <div class="sev-pip medium"></div>
-            <span class="sev-label medium">cloud security</span>
-          </div>
-          <h3>MDCA Policies That Actually Surface Signal: What I Configure First</h3>
-          <p>Most default cloud app security policies are noise. Here's the policy stack I build from scratch when I inherit a new tenant — and why the defaults miss the point.</p>
-          <div class="post-footer">
-            <span class="post-date">2025-03-14</span>
-            <span class="post-domain">MDCA</span>
-          </div>
-        </article>
-
-        <article class="post-card">
-          <div class="post-severity">
-            <div class="sev-pip low"></div>
-            <span class="sev-label low">AI integration</span>
-          </div>
-          <h3>Building a Copilot Studio Bot That Handles Data Retrieval Requests</h3>
-          <p>Instead of a shared mailbox and manual lookups, I built an internal bot that handles intake, validates requests against policy, and kicks off the retrieval flow automatically.</p>
-          <div class="post-footer">
-            <span class="post-date">2025-02-27</span>
-            <span class="post-domain">Copilot Studio</span>
-          </div>
-        </article>
-
-      </div>
+      <div class="posts-grid" id="posts-grid"></div>
     </div>
   </section>
 
@@ -677,7 +614,39 @@
 
 </div>
 
+<script src="posts.js"></script>
 <script>
+(function () {
+  // ── Render posts ──────────────────────────────
+  const grid = document.getElementById('posts-grid');
+
+  if (!POSTS || POSTS.length === 0) {
+    grid.style.background = 'none';
+    grid.style.border = 'none';
+    grid.innerHTML =
+      '<div style="padding:3rem 2rem; text-align:center; font-family:var(--mono); color:var(--border2); font-size:.8rem; letter-spacing:.12em;">' +
+      '// no field notes yet — check back soon' +
+      '</div>';
+  } else {
+    POSTS.forEach(post => {
+      const el = document.createElement('article');
+      el.className = 'post-card' + (post.featured ? ' featured' : '');
+      el.innerHTML =
+        '<div class="post-severity">' +
+          '<div class="sev-pip ' + post.severity + '"></div>' +
+          '<span class="sev-label ' + post.severity + '">' + post.domain + '</span>' +
+        '</div>' +
+        '<h3>' + post.title + '</h3>' +
+        '<p>' + post.excerpt + '</p>' +
+        '<div class="post-footer">' +
+          '<span class="post-date">' + post.date + '</span>' +
+          '<span class="post-domain">' + post.domain + '</span>' +
+        '</div>';
+      grid.appendChild(el);
+    });
+  }
+})();
+
 (function () {
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
