@@ -30,6 +30,21 @@
       opacity: .03; pointer-events: none; z-index: 50;
     }
 
+    /* Scanlines */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.08) 3px, rgba(0,0,0,.08) 4px);
+      pointer-events: none; z-index: 51;
+    }
+
+    /* Vignette */
+    #vignette {
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.75) 100%);
+      pointer-events: none; z-index: 9;
+    }
+
     /* ── LAYOUT ── */
     #splash {
       position: relative; z-index: 10;
@@ -56,6 +71,15 @@
     }
 
     #wordmark .name em { font-style: italic; color: var(--amber); }
+
+    @keyframes wordGlitch {
+      0%   { text-shadow:  3px 0 var(--cyan), -3px 0 var(--red); transform: skewX(-3deg); }
+      20%  { text-shadow: -3px 0 var(--cyan),  3px 0 var(--red); transform: skewX(3deg); }
+      40%  { text-shadow:  2px 2px var(--red); transform: skewX(-1deg); }
+      60%  { text-shadow: none; transform: skewX(1deg); }
+      100% { text-shadow: none; transform: none; }
+    }
+    #wordmark.glitch .name { animation: wordGlitch .5s steps(1) forwards; }
 
     #wordmark .sub {
       display: block;
@@ -239,7 +263,7 @@
     }
 
     #prog-track { height: 2px; background: var(--dim); border-radius: 2px; overflow: hidden; }
-    #prog-fill  { height: 100%; width: 0%; background: linear-gradient(to right, var(--amber), var(--cyan)); border-radius: 2px; transition: width .45s ease; }
+    #prog-fill  { height: 100%; width: 0%; background: linear-gradient(to right, var(--amber), var(--cyan)); border-radius: 2px; transition: width .45s ease; box-shadow: 0 0 8px rgba(245,166,35,.5); }
 
     #prog-meta {
       display: flex; justify-content: space-between;
@@ -296,6 +320,7 @@
 </head>
 <body>
 <div id="curtain"></div>
+<div id="vignette"></div>
 
 <div id="splash">
 
@@ -406,12 +431,16 @@ const ticker = setInterval(() => {
   current++;
   if (current >= LINES.length) {
     clearInterval(ticker);
-    // Show ACCESS GRANTED
+    // Show ACCESS GRANTED + glitch wordmark
     setTimeout(() => {
       document.getElementById('access-granted').classList.add('show');
       pctEl.textContent   = '100%';
       labelEl.textContent = 'system ready';
       fill.style.width    = '100%';
+      const wm = document.getElementById('wordmark');
+      wm.classList.remove('glitch');
+      void wm.offsetWidth;
+      wm.classList.add('glitch');
     }, 300);
     // Show enter button
     setTimeout(() => {
