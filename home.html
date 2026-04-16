@@ -234,53 +234,6 @@
     .cc-row .warn { color: var(--amber); }
     .cc-row .hi   { color: var(--cyan); }
 
-    /* ── HERO TERMINAL ── */
-    .hero-terminal {
-      grid-column: 1 / -1; max-width: 640px; margin-top: 2.5rem;
-      background: #060a10; border: 1px solid var(--border2); border-radius: 6px;
-      overflow: hidden; opacity: 0; animation: riseIn .6s .85s forwards;
-      box-shadow: 0 20px 50px rgba(0,0,0,.55), var(--glow-cyan);
-    }
-    .ht-bar {
-      background: #0e1726; padding: .5rem 1rem;
-      display: flex; align-items: center; gap: .4rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .ht-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .ht-dot.r { background: #f87171; } .ht-dot.y { background: #f5a623; } .ht-dot.g { background: #4ade80; }
-    .ht-title {
-      flex: 1; text-align: center; font-family: var(--mono); font-size: .65rem;
-      color: var(--border2); letter-spacing: .08em; margin-left: -30px;
-    }
-
-    .ht-body {
-      padding: .8rem 1.2rem; height: 190px; overflow-y: auto;
-      font-family: var(--mono); font-size: .75rem; line-height: 1.75;
-    }
-    .ht-body::-webkit-scrollbar { width: 3px; }
-    .ht-body::-webkit-scrollbar-thumb { background: var(--border); }
-
-    .ht-line { display: block; }
-    .ht-prompt { color: var(--amber); }
-    .ht-cmd    { color: var(--text-bright); }
-    .ht-out    { display: block; padding-left: 1.1rem; color: var(--text); }
-    .ht-out.hi   { color: var(--cyan); }
-    .ht-out.ok   { color: var(--green); }
-    .ht-out.warn { color: var(--amber); }
-    .ht-out.err  { color: var(--red); }
-
-    .ht-input-row {
-      display: flex; align-items: center; gap: .5rem;
-      padding: .5rem 1.2rem .8rem;
-      border-top: 1px solid var(--border);
-    }
-    .ht-input-row .ht-prompt { font-family: var(--mono); font-size: .75rem; flex-shrink: 0; }
-    #ht-input {
-      flex: 1; background: none; border: none; outline: none;
-      font-family: var(--mono); font-size: .75rem;
-      color: var(--text-bright); caret-color: var(--amber);
-    }
-
     /* ── SCROLL REVEAL ── */
     .reveal { opacity: 0; transform: translateY(22px); transition: opacity .65s ease, transform .65s ease; }
     .reveal.visible { opacity: 1; transform: none; }
@@ -457,19 +410,6 @@
       <div class="cc-row"><span>UTC</span><span class="hi" id="live-clock">--:--:--</span></div>
     </div>
 
-    <div class="hero-terminal">
-      <div class="ht-bar">
-        <div class="ht-dot r"></div><div class="ht-dot y"></div><div class="ht-dot g"></div>
-        <span class="ht-title">linnuxtech@ops: ~</span>
-      </div>
-      <div class="ht-body" id="ht-body">
-        <span class="ht-out hi">// Interactive terminal — type <span style="color:var(--amber)">help</span> to get started.</span>
-      </div>
-      <div class="ht-input-row">
-        <span class="ht-prompt">$</span>
-        <input id="ht-input" type="text" placeholder="enter command..." autocomplete="off" spellcheck="false" />
-      </div>
-    </div>
   </header>
 
   <section id="posts" style="padding-top:1rem;">
@@ -669,88 +609,6 @@ document.getElementById('nav-toggle').addEventListener('click', () => {
   document.getElementById('nav-toggle').classList.toggle('open');
   document.getElementById('mobile-nav').classList.toggle('open');
 });
-
-/* ── INTERACTIVE TERMINAL ── */
-(function () {
-  const body  = document.getElementById('ht-body');
-  const input = document.getElementById('ht-input');
-  const hist  = [];
-  let hIdx = -1;
-
-  const CMDS = {
-    help: [
-      { t: 'Available commands:', c: 'hi' },
-      { t: '  about    — who is linnuxtech?',       c: '' },
-      { t: '  skills   — current skill stack',      c: '' },
-      { t: '  stack    — tools &amp; technologies', c: '' },
-      { t: '  status   — system status',            c: '' },
-      { t: '  contact  — get in touch',             c: '' },
-      { t: '  clear    — clear terminal',           c: '' },
-    ],
-    about: [
-      { t: 'Linnux Tech — Security Engineer &amp; Data Protection Specialist.', c: 'hi' },
-      { t: 'Former SOC analyst, now operating in the data governance space.',   c: '' },
-      { t: 'Focused on Microsoft 365: MDCA, Legal Hold, Logic Apps,',          c: '' },
-      { t: 'eDiscovery workflows, and AI-driven automation.',                   c: '' },
-    ],
-    skills: [
-      { t: '[ACTIVE]   Logic Apps / Power Automate  ████████░░  82%', c: 'ok'   },
-      { t: '[ACTIVE]   MDCA &amp; Data Policy        ███████░░░  78%', c: 'ok'   },
-      { t: '[ACTIVE]   Legal Hold &amp; eDiscovery   ███████░░░  74%', c: 'ok'   },
-      { t: '[GROWING]  AI Integration / Copilot      ██████░░░░  65%', c: 'warn' },
-      { t: '[PRIOR]    SOC &amp; Incident Response   █████████░  88%', c: 'hi'   },
-    ],
-    stack: [
-      { t: 'Cloud     ─  Microsoft 365, Azure',          c: 'hi'   },
-      { t: 'Automate  ─  Logic Apps, Power Automate',    c: 'hi'   },
-      { t: 'AI        ─  Copilot Studio, Claude',        c: 'hi'   },
-      { t: 'Security  ─  MDCA, Defender, Purview',       c: 'hi'   },
-      { t: 'Ops       ─  eDiscovery, Legal Hold, DLP',   c: 'hi'   },
-    ],
-    status: [
-      { t: '● sys_online        nominal',                        c: 'ok'   },
-      { t: '● blog              active — posts incoming',        c: 'warn' },
-      { t: '● ai_integration    building',                       c: 'warn' },
-      { t: '● availability      open to opportunities',          c: 'ok'   },
-    ],
-    contact: [
-      { t: 'GitHub  ─  github.com/LinnuxTech',     c: 'ok' },
-      { t: 'Email   ─  austinlinn.al@gmail.com',   c: 'ok' },
-    ],
-    clear: null,
-  };
-
-  function append(html) {
-    const d = document.createElement('span');
-    d.innerHTML = html;
-    body.appendChild(d);
-    body.scrollTop = body.scrollHeight;
-  }
-
-  function run(raw) {
-    const cmd = raw.trim().toLowerCase();
-    if (!cmd) return;
-    hist.unshift(raw); hIdx = -1;
-
-    if (cmd === 'clear') { body.innerHTML = ''; return; }
-
-    append(`<span class="ht-line"><span class="ht-prompt">$ </span><span class="ht-cmd">${raw}</span></span>\n`);
-
-    if (CMDS[cmd]) {
-      CMDS[cmd].forEach(l => append(`<span class="ht-out ${l.c}">${l.t}</span>\n`));
-    } else {
-      append(`<span class="ht-out err">command not found: ${raw} — type <span style="color:var(--amber)">help</span></span>\n`);
-    }
-  }
-
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter')     { run(input.value); input.value = ''; }
-    else if (e.key === 'ArrowUp')   { e.preventDefault(); if (hIdx < hist.length - 1) input.value = hist[++hIdx]; }
-    else if (e.key === 'ArrowDown') { e.preventDefault(); hIdx > 0 ? input.value = hist[--hIdx] : (hIdx = -1, input.value = ''); }
-  });
-
-  document.querySelector('.hero-terminal').addEventListener('click', () => input.focus());
-})();
 
 /* ── BACKGROUND CANVAS with mouse parallax ── */
 (function () {
